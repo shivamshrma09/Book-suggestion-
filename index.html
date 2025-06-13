@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BookDekho</title>
+  <style>
+    :root {
+      --primary: #0e4682;
+      --secondary: #0e3182;
+      --accent: #00bfff;
+      --button: #0e3182;
+      --button-hover: #0e4682;
+      --bg-dark: #0e0e2c;
+      --card-bg: #1c1c3c;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-dark);
+      color: #fff;
+      min-height: 100vh;
+    }
+    .head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--secondary);
+      color: white;
+    }
+    .name h1 { font-size: 24px; }
+    .btn button {
+      margin-left: 10px;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      background-color: var(--primary);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .btn button:hover { background-color: var(--secondary); }
+    #bookInput{
+      margin-left: 10vw;
+      width: 70vw;
+      height: 40px;
+      margin-top: 60px;
+      border-radius: 7px;
+      border: 2px solid blue;
+    }
+    .button1{
+      height: 40px;
+      width: 80px;
+      font-weight: bold;
+      border-radius: 7px;
+      background-color: red;
+      color: white;
+    }
+    .input h2{
+      font-size: 30px;
+      margin-left: 120px;
+      color: white;
+    }
+    .t {
+      margin: 40px 0 18px 20px;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+    }
+    .genre-select-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .genre-card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      padding: 18px 28px;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 10px;
+    }
+    .genre-card label {
+      font-size: 1.2rem;
+      color: var(--accent);
+      font-weight: 600;
+      margin-right: 10px;
+    }
+    #genre {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: 2px solid var(--accent);
+      font-size: 1rem;
+      background: #18183a;
+      color: #fff;
+      outline: none;
+      transition: border 0.2s;
+    }
+    #genre:focus { border: 2px solid #fff; }
+    .trending-wrapper {
+      position: relative;
+      margin-bottom: 40px;
+    }
+    .trending {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 10px 0 20px 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--accent) #18183a;
+    }
+    .scroll-track {
+      display: flex;
+      gap: 24px;
+      transition: transform 0.4s cubic-bezier(.4,2,.6,1);
+      will-change: transform;
+    }
+    .card {
+      background: var(--card-bg);
+      color: #fff;
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+      height: 420px;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.28);
+      transition: transform 0.3s, box-shadow 0.3s;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      position: relative;
+    }
+    .card:hover {
+      transform: scale(1.06) translateY(-6px);
+      box-shadow: 0 16px 32px rgba(0,0,0,0.32);
+      z-index: 2;
+    }
+    .card img {
+      width: 100%;
+      height: 260px;
+      object-fit: cover;
+      border-bottom: 2px solid var(--accent);
+    }
+    .card-content {
+      padding: 16px 14px 10px 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+    .card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+    .card p {
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #cbd5e1;
+    }
+    .scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      font-size: 1.7rem;
+      cursor: pointer;
+      z-index: 5;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+      transition: background 0.3s;
+      opacity: 0.85;
+    }
+    .scroll-btn:hover { background: var(--primary); }
+    .left-btn { left: 2px; }
+    .right-btn { right: 2px; }
+    @media (max-width: 900px) {
+      .card { width: 200px; min-width: 200px; height: 340px; }
+      .card img { height: 170px; }
+    }
+    @media (max-width: 600px) {
+      .input h2 { font-size: 1.1rem; }
+      .card { width: 140px; min-width: 140px; height: 220px; }
+      .card img { height: 90px; }
+      .genre-card { flex-direction: column; gap: 8px; padding: 12px; }
+      .t { font-size: 1.1rem; }
+    }
+    .card1 {
+      display: flex;
+      align-items: flex-start;
+      border-radius: 1px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+      padding: 3px 40px;
+      max-width: 700px;
+      margin: 40px auto;
+      color: #fff;
+      gap: 36px;
+    }
+    .card1 img {
+      border-radius: 1px;
+      width: 270px;
+      height: 178px;
+      object-fit: cover;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    }
+    .card1-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+    .card1-content h1 {
+      font-size: 2.1rem;
+      color: #00bfff;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .card1-content .overview p{
+      font-size: 1.08rem;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+    .card1-content .info-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin: 4px 0;
+      font-size: 1.08rem;
+    }
+    .card1-content .label {
+      color: #00bfff;
+      font-weight: 600;
+      min-width: 80px;
+    }
+    .card1-content .trailer-link {
+      color: #00bfff;
+      text-decoration: underline;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .card1-content .trailer-link:hover {
+      color: #fff;
+    }
+    @media (max-width: 700px) {
+      .card1 {
+        flex-direction: column;
+        align-items: center;
+        padding: 16px 10px;
+        gap: 16px;
+      }
+      .card1 img {
+        width: 130px;
+        height: 190px;
+      }
+      .card1-content h1 { font-size: 1.3rem; }
+    }
+    .tag {
+      display: inline-block;
+      background: var(--accent);
+      color: #18183a;
+      border-radius: 4px;
+      padding: 2px 8px;
+      margin-right: 5px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div class="head">
+    <div class="name">
+      <h1>BookDekho</h1>
+    </div>
+    <div class="btn">
+      <button type="button">Home</button>
+      <button class="change" type="button">About</button>
+      <a href="https://github.com/shivamshrma09" target="_blank" style="text-decoration: none;">
+        <button type="button">Github profile</button>
+      </a>
+      <a href="https://www.linkedin.com/in/shivam-kumar-321810324?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank" style="text-decoration: none;">
+        <button type="button">LinkedIn profile</button>
+      </a>
+    </div>
+  </div>
+  <div class="input">
+    <input type="text" id="bookInput" placeholder="Search your favourite book..." />
+    <button class="button1" onclick="searchBook()" type="submit">Search</button>
+    <br><br>
+    <h2>Find your Favourite Book!</h2>
+  </div>
+  <div class="card1" id="bookContainer"></div>
+  <h1 class="t">Trending Books</h1>
+  <div class="trending-wrapper">
+    <button class="scroll-btn left-btn" onclick="scrollLeft('trendingTrack')">&#8592;</button>
+    <div class="trending">
+      <div class="scroll-track" id="trendingTrack"></div>
+    </div>
+    <button class="scroll-btn right-btn" onclick="scrollRight('trendingTrack')">&#8594;</button>
+  </div>
+  <h1 class="t">Select Book Category :</h1>
+  <div class="genre-select-wrapper">
+    <div class="genre-card">
+      <label for="genre">Choose Category</label>
+      <select id="genre" name="genre">
+        <option value="">-- Select Category --</option>
+      </select>
+    </div>
+  </div>
+  <h1 class="t">New Releases</h1>
+  <div class="trending-wrapper">
+    <button class="scroll-btn left-btn" onclick="scrollLeft('upcomingTrack')">&#8592;</button>
+    <div class="trending">
+      <div class="scroll-track" id="upcomingTrack"></div>
+    </div>
+    <button class="scroll-btn right-btn" onclick="scrollRight('upcomingTrack')">&#8594;</button>
+  </div>
+  <script>
+    // Static categories for Google Books
+    const BOOK_CATEGORIES = [
+      "Fiction", "Nonfiction", "Science", "History", "Biography", "Children", "Fantasy", "Mystery", "Romance", "Horror", "Comics", "Religion", "Poetry", "Business", "Health"
+    ];
+
+    // Load categories in dropdown
+    function loadCategories() {
+      const genreSelect = document.getElementById('genre');
+      BOOK_CATEGORIES.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        genreSelect.appendChild(option);
+      });
+    }
+
+    // Trending Books (using 'bestseller' as keyword)
+    async function loadTrendingBooks(category = '') {
+      let url = `https://www.googleapis.com/books/v1/volumes?q=${category ? 'subject:' + encodeURIComponent(category) : 'bestseller'}&maxResults=12&printType=books`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderBooks('trendingTrack', data.items || []);
+    }
+
+    // New Releases (using 'new' as keyword, Google Books doesn't provide a direct new release endpoint)
+    async function loadUpcomingBooks() {
+      let url = `https://www.googleapis.com/books/v1/volumes?q=new&orderBy=newest&maxResults=12&printType=books`;
+      const res = await fetch(url);
+      const data = await res.json();
+      renderBooks('upcomingTrack', data.items || []);
+    }
+
+    // Render book cards in a track
+    function renderBooks(trackId, books) {
+      const track = document.getElementById(trackId);
+      track.innerHTML = '';
+      books.forEach(book => {
+        const info = book.volumeInfo;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <img src="${info.imageLinks?.thumbnail || 'https://via.placeholder.com/260x390?text=No+Image'}" alt="${info.title}" />
+          <div class="card-content">
+            <h3>${info.title}</h3>
+            <p>${info.authors ? info.authors.join(', ') : 'Unknown Author'}</p>
+            <p>${info.description ? info.description.slice(0, 70) + '...' : 'No description available.'}</p>
+          </div>
+        `;
+        card.onclick = () => showBookDetails(book);
+        track.appendChild(card);
+      });
+    }
+
+    // Show book details in main card
+    function showBookDetails(book) {
+      const info = book.volumeInfo;
+      const categories = info.categories ? info.categories.map(g => `<span class="tag">${g}</span>`).join(' ') : '-';
+      document.getElementById('bookContainer').innerHTML = `
+        <img src="${info.imageLinks?.thumbnail || 'https://via.placeholder.com/270x178?text=No+Image'}" alt="${info.title} cover">
+        <div class="card1-content">
+          <h1>${info.title} ${info.publishedDate ? '(' + info.publishedDate.substring(0, 4) + ')' : ''}</h1>
+          <div class="overview">
+            <p><strong>Overview:</strong> ${info.description || 'No description available.'}</p>
+          </div>
+          <div class="info-row">
+            <span class="label">Author(s):</span>
+            <span>${info.authors ? info.authors.join(', ') : '-'}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Category:</span>
+            <span>${categories}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Pages:</span>
+            <span>${info.pageCount || '-'}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Rating ⭐:</span>
+            <span>${info.averageRating ? info.averageRating + ' / 5' : '-'}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Published:</span>
+            <span>${info.publishedDate || '-'}</span>
+          </div>
+          <div class="info-row">
+            <span class="label">Preview:</span>
+            <a class="trailer-link" href="${info.previewLink}" target="_blank">Read Preview</a>
+          </div>
+        </div>
+      `;
+    }
+
+    // Search for a book
+    async function searchBook() {
+      const bookName = document.getElementById('bookInput').value.trim();
+      if (!bookName) return;
+      let url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(bookName)}&maxResults=1&printType=books`;
+      const res = await fetch(url);
+      const data = await res.json();
+      if (!data.items || data.items.length === 0) {
+        document.getElementById('bookContainer').innerHTML = "<p>Book not found!</p>";
+        return;
+      }
+      showBookDetails(data.items[0]);
+    }
+
+    // Category change event
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('genre').addEventListener('change', function() {
+        const genreId = this.value;
+        loadTrendingBooks(genreId);
+      });
+      loadCategories();
+      loadTrendingBooks();
+      loadUpcomingBooks();
+    });
+
+    // Horizontal scroll logic
+    function scrollLeft(trackId) {
+      const track = document.getElementById(trackId);
+      const cards = track.children;
+      if (cards.length === 0) return;
+      track.insertBefore(cards[cards.length - 1], cards[0]);
+      track.parentElement.scrollLeft += cards[0].offsetWidth + 24;
+      track.parentElement.scrollBy({ left: -(cards[0].offsetWidth + 24), behavior: "smooth" });
+    }
+    function scrollRight(trackId) {
+      const track = document.getElementById(trackId);
+      const cards = track.children;
+      if (cards.length === 0) return;
+      track.parentElement.scrollBy({ left: cards[0].offsetWidth + 24, behavior: "smooth" });
+      setTimeout(() => {
+        track.appendChild(cards[0]);
+        track.parentElement.scrollLeft -= cards[0].offsetWidth + 24;
+      }, 300);
+    }
+    function autoScroll(trackId, interval = 2000) {
+      const track = document.getElementById(trackId);
+      setInterval(() => {
+        const cards = track.children;
+        if (cards.length === 0) return;
+        track.parentElement.scrollBy({ left: cards[0].offsetWidth + 24, behavior: "smooth" });
+        setTimeout(() => {
+          track.appendChild(cards[0]);
+          track.parentElement.scrollLeft -= cards[0].offsetWidth + 24;
+        }, 300);
+      }, interval);
+    }
+    setTimeout(() => {
+      autoScroll('trendingTrack', 1000);
+      autoScroll('upcomingTrack', 500);
+    }, 2000);
+  </script>
+</body>
+</html>
